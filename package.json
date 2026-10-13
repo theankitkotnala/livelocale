@@ -1,0 +1,28 @@
+{
+  "name": "livelocale-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
+  "scripts": {
+    "dev": "npm run build && npm --workspace @livelocale/demo run dev",
+    "build": "npm --workspace @livelocale/core run build && npm --workspace @livelocale/browser run build && npm --workspace @livelocale/react run build && npm --workspace @livelocale/transformers-provider run build",
+    "typecheck": "npm run build && npm run typecheck --workspaces --if-present",
+    "test:core": "npm run build --workspace @livelocale/core && node tests/core-smoke.mjs",
+    "test": "npm run build && node tests/core-smoke.mjs && node tests/browser-smoke.mjs"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3",
+    "vite": "^6.2.0",
+    "@types/react": "^18.3.18",
+    "@types/react-dom": "^18.3.5",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

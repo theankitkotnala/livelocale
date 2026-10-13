@@ -1,0 +1,25 @@
+{
+  "name": "@livelocale/transformers-provider",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "dependencies": {
+    "@livelocale/core": "0.1.0",
+    "@huggingface/transformers": "^3.7.2"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false
+}
