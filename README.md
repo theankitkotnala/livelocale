@@ -39,7 +39,7 @@ npm install @livelocale/react @livelocale/browser @livelocale/core
 
 For the optional Transformers.js provider, also install `@livelocale/transformers-provider`.
 
-For the first release, an npm maintainer must own the `@livelocale` scope, log in with npm, and publish all four packages once in dependency order (`core`, `browser`, `react`, `transformers-provider`). Then configure npm trusted publishing on each package for GitHub owner `theankitkotnala`, repository `livelocale`, and workflow filename `publish.yml`.
+For the first release, an npm maintainer must own the `@livelocale` scope and publish all four packages once from an authenticated machine in dependency order (`core`, `browser`, `react`, `transformers-provider`). npm requires the packages to exist before Trusted Publishing can be configured. After the first release, configure npm trusted publishing on each package for GitHub owner `theankitkotnala`, repository `livelocale`, and workflow filename `publish.yml`. Subsequent releases use OIDC through GitHub Actions without a long-lived npm token.
 
 For later releases, bump the versions in all four `packages/*/package.json` files, update the internal `@livelocale/core` dependency ranges to match, and refresh `package-lock.json` with `npm install --package-lock-only`. Push that version bump to `main`; the publish workflow runs only for pushes to `main`, and publishes only when it detects a package version change. All four package versions must match. The workflow builds the workspace and publishes the packages in dependency order.
 
