@@ -1,6 +1,6 @@
 {
   "name": "@livelocale/transformers-provider",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Local Transformers.js translation provider for LiveLocale",
   "license": "MIT",
   "repository": {
@@ -23,7 +23,7 @@
     }
   },
   "dependencies": {
-    "@livelocale/core": "0.1.0",
+    "@livelocale/core": "0.1.1",
     "@huggingface/transformers": "^3.7.2"
   },
   "scripts": {

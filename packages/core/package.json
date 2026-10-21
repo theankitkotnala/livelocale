@@ -1,6 +1,6 @@
 {
   "name": "@livelocale/core",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Framework-agnostic runtime and utilities for LiveLocale",
   "license": "MIT",
   "repository": {

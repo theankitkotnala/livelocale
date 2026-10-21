@@ -5,10 +5,10 @@
   "type": "module",
   "scripts": { "dev": "vite", "build": "vite build", "typecheck": "tsc --noEmit -p tsconfig.json" },
   "dependencies": {
-    "@livelocale/core": "0.1.0",
-    "@livelocale/react": "0.1.0",
-    "@livelocale/browser": "0.1.0",
-    "@livelocale/transformers-provider": "0.1.0",
+    "@livelocale/core": "0.1.1",
+    "@livelocale/react": "0.1.1",
+    "@livelocale/browser": "0.1.1",
+    "@livelocale/transformers-provider": "0.1.1",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
