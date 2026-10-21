@@ -31,7 +31,21 @@ npm test
 npm run dev
 ```
 
-The workspace packages are currently versioned `0.1.0`; review package metadata, licenses, and the release process before publishing.
+The packages will be released individually under the `@livelocale` npm scope. After the first release, install the packages your app uses:
+
+```bash
+npm install @livelocale/react @livelocale/browser @livelocale/core
+```
+
+For the optional Transformers.js provider, also install `@livelocale/transformers-provider`.
+
+For the first release, an npm maintainer must own the `@livelocale` scope, log in with npm, and publish all four packages once in dependency order (`core`, `browser`, `react`, `transformers-provider`). Then configure npm trusted publishing on each package for GitHub owner `theankitkotnala`, repository `livelocale`, and workflow filename `publish.yml`.
+
+For later releases, bump the versions in all four `packages/*/package.json` files, update the internal `@livelocale/core` dependency ranges to match, and refresh `package-lock.json` with `npm install --package-lock-only`. Push that version bump to `main`; the publish workflow runs only for pushes to `main`, and publishes only when it detects a package version change. All four package versions must match. The workflow builds the workspace and publishes the packages in dependency order.
+
+### Versioning policy
+
+Package versions follow [Semantic Versioning 2.0.0](https://semver.org/) as `MAJOR.MINOR.PATCH`, with no `v` prefix in `package.json`. While the project is in `0.x` initial development, use patch releases for compatible fixes and minor releases for new work or breaking API changes. Move to `1.0.0` when the public API is stable and compatibility can be promised. After `1.0.0`, use patch for compatible fixes, minor for backward-compatible features, and major for breaking changes. Main-branch publishing accepts stable numeric versions only; prerelease versions should wait for a separate prerelease publishing path.
 
 ## React usage
 

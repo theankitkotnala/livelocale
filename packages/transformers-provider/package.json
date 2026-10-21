@@ -1,6 +1,18 @@
 {
   "name": "@livelocale/transformers-provider",
   "version": "0.1.0",
+  "description": "Local Transformers.js translation provider for LiveLocale",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theankitkotnala/livelocale.git",
+    "directory": "packages/transformers-provider"
+  },
+  "homepage": "https://github.com/theankitkotnala/livelocale#readme",
+  "bugs": {
+    "url": "https://github.com/theankitkotnala/livelocale/issues"
+  },
+  "keywords": ["localization", "i18n", "transformers", "translation", "livelocale", "AI based translation"],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -21,5 +33,9 @@
   "files": [
     "dist"
   ],
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
   "sideEffects": false
 }

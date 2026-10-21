@@ -1,0 +1,101 @@
+name: Publish to npm
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  check-version-bump:
+    runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.versions.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Detect package version bump
+        id: versions
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          import { execFileSync } from 'node:child_process';
+          import { appendFileSync } from 'node:fs';
+
+          const packages = ['core', 'browser', 'react', 'transformers-provider'];
+          const files = packages.map((name) => `packages/${name}/package.json`);
+          const readAt = (revision, file) => JSON.parse(execFileSync('git', ['show', `${revision}:${file}`], { encoding: 'utf8' }));
+          const current = files.map((file) => readAt(process.env.AFTER, file));
+          const releaseVersion = current[0].version;
+          const stableVersionPattern = /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/;
+
+          if (!stableVersionPattern.test(releaseVersion)) {
+            throw new Error(`Release version must be a stable MAJOR.MINOR.PATCH version; got ${releaseVersion}`);
+          }
+          if (current.some((pkg) => pkg.version !== releaseVersion)) {
+            throw new Error('All four packages must use the same version.');
+          }
+
+          for (let index = 1; index < current.length; index += 1) {
+            if (current[index].dependencies?.['@livelocale/core'] !== releaseVersion) {
+              throw new Error(`${current[index].name} must depend on @livelocale/core ${releaseVersion}`);
+            }
+          }
+
+          const isNewBranch = /^0+$/.test(process.env.BEFORE);
+          let previousVersion;
+          if (!isNewBranch) {
+            const previous = files.map((file) => readAt(process.env.BEFORE, file));
+            previousVersion = previous[0].version;
+            if (previous.some((pkg) => pkg.version !== previousVersion)) {
+              throw new Error('Previous package versions are inconsistent; align them before releasing.');
+            }
+          }
+
+          const changed = isNewBranch || releaseVersion !== previousVersion;
+          if (changed && previousVersion && compare(releaseVersion, previousVersion) <= 0) {
+            throw new Error(`Release version ${releaseVersion} must be greater than ${previousVersion}.`);
+          }
+
+          console.log(`changed=${changed}`);
+          appendFileSync(process.env.GITHUB_OUTPUT, `changed=${changed}\n`);
+
+          function compare(left, right) {
+            const a = left.split('.').map(Number);
+            const b = right.split('.').map(Number);
+            for (let index = 0; index < 3; index += 1) {
+              if (a[index] !== b[index]) return a[index] - b[index];
+            }
+            return 0;
+          }
+          NODE
+
+  publish:
+    needs: check-version-bump
+    if: needs.check-version-bump.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
+      - run: npm ci
+      - run: npm run build
+      - name: Publish core
+        run: npm publish --workspace @livelocale/core
+      - name: Publish browser
+        run: npm publish --workspace @livelocale/browser
+      - name: Publish React bindings
+        run: npm publish --workspace @livelocale/react
+      - name: Publish Transformers provider
+        run: npm publish --workspace @livelocale/transformers-provider
